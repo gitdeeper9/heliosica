@@ -1,0 +1,195 @@
+# HELIOSICA Docker Compose Configuration
+# Heliospheric Event and L1 Integrated Observatory for Solar Intelligence and Coronal Activity
+# Version: 1.0.0 | DOI: 10.5281/zenodo.19082026
+
+version: '3.8'
+
+services:
+  # ============================================
+  # HELIOSICA Core Service
+  # ============================================
+  heliosica:
+    image: gitdeeper9/heliosica:latest
+    container_name: heliosica
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "5000:5000"  # Web dashboard
+      - "8000:8000"  # API
+      - "9090:9090"  # Metrics
+    volumes:
+      - ./data:/data
+      - ./config:/app/config
+      - ./logs:/app/logs
+      - ./output:/app/output
+      - ./.env:/app/.env:ro
+    environment:
+      - HELIOSICA_ENV=production
+      - DB_HOST=timescaledb
+      - DB_PORT=5432
+      - DB_NAME=heliosica
+      - DB_USER=heliosica_user
+      - DB_PASSWORD=${DB_PASSWORD:-changeme}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - NOAA_API_KEY=${NOAA_API_KEY}
+      - LOG_LEVEL=INFO
+    depends_on:
+      - timescaledb
+      - redis
+    networks:
+      - heliosica-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # ============================================
+  # TimescaleDB (Time-series data)
+  # ============================================
+  timescaledb:
+    image: timescale/timescaledb:latest-pg15
+    container_name: timescaledb
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=heliosica
+      - POSTGRES_USER=heliosica_user
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-changeme}
+    volumes:
+      - timescaledb-data:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    networks:
+      - heliosica-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U heliosica_user"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ============================================
+  # Redis (Caching for real-time data)
+  # ============================================
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes --maxmemory 1gb --maxmemory-policy allkeys-lru
+    networks:
+      - heliosica-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ============================================
+  # Prometheus (Metrics collection)
+  # ============================================
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    restart: unless-stopped
+    ports:
+      - "9091:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    networks:
+      - heliosica-network
+
+  # ============================================
+  # Grafana (Dashboards)
+  # ============================================
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin}
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ./grafana/datasources:/etc/grafana/provisioning/datasources
+    depends_on:
+      - prometheus
+    networks:
+      - heliosica-network
+
+  # ============================================
+  # Nginx (Reverse Proxy)
+  # ============================================
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/ssl:/etc/nginx/ssl
+      - ./dashboard/build:/usr/share/nginx/html
+    depends_on:
+      - heliosica
+      - grafana
+    networks:
+      - heliosica-network
+
+  # ============================================
+  # Jupyter Lab (Development)
+  # ============================================
+  jupyter:
+    image: jupyter/datascience-notebook:latest
+    container_name: jupyter
+    restart: unless-stopped
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./notebooks:/home/jovyan/work
+      - ./data:/home/jovyan/data
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+    command: start-notebook.sh --NotebookApp.token=''
+    networks:
+      - heliosica-network
+    profiles:
+      - dev
+
+# ============================================
+# Networks
+# ============================================
+networks:
+  heliosica-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+# ============================================
+# Volumes
+# ============================================
+volumes:
+  timescaledb-data:
+    driver: local
+  redis-data:
+    driver: local
+  prometheus-data:
+    driver: local
+  grafana-data:
+    driver: local

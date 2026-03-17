@@ -1,0 +1,79 @@
+# HELIOSICA .dockerignore
+# Version: 1.0.0 | DOI: 10.5281/zenodo.19082026
+
+# Version control
+.git
+.gitignore
+.gitattributes
+.gitlab-ci.yml
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache
+.coverage
+.coverage.*
+htmlcov
+*.egg-info
+dist
+build
+venv
+.venv
+env
+ENV
+
+# Development
+notebooks
+.ipynb_checkpoints
+*.ipynb
+.pytest_cache
+.mypy_cache
+.pre-commit-config.yaml
+
+# Data
+data/raw/*
+data/processed/*
+data/cache/*
+!data/sample/
+
+# Logs
+logs/*.log
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Docker
+Dockerfile
+docker-compose*.yml
+.dockerignore
+
+# Documentation
+docs/_build
+site/
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Tests
+tests/test_outputs
+.coverage
+htmlcov
+
+# Output
+output/*
+!output/README.md
+
+# Temporary
+tmp
+temp
+*.tmp
+*.temp

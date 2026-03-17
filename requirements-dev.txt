@@ -1,0 +1,47 @@
+# HELIOSICA Development Requirements
+# Heliospheric Event and L1 Integrated Observatory for Solar Intelligence and Coronal Activity
+# Version: 1.0.0 | DOI: 10.5281/zenodo.19082026
+
+# ============================================
+# Testing
+# ============================================
+pytest>=7.0.0
+pytest-cov>=4.0.0
+pytest-xdist>=3.0.0
+pytest-benchmark>=4.0.0
+hypothesis>=6.0.0
+
+# ============================================
+# Code Quality
+# ============================================
+black>=23.0.0
+isort>=5.0.0
+flake8>=6.0.0
+flake8-docstrings>=1.7.0
+pylint>=2.0.0
+mypy>=1.0.0
+pre-commit>=3.0.0
+
+# ============================================
+# Documentation
+# ============================================
+sphinx>=7.0.0
+sphinx-rtd-theme>=1.2.0
+sphinx-autodoc-typehints>=1.23.0
+nbsphinx>=0.9.0
+mkdocs>=1.4.0
+mkdocs-material>=9.0.0
+mkdocstrings[python]>=0.22.0
+
+# ============================================
+# Development Tools
+# ============================================
+ipython>=8.0.0
+jupyter>=1.0.0
+jupyterlab>=4.0.0
+notebook>=7.0.0
+
+# ============================================
+# All development dependencies
+# ============================================
+-r requirements.txt

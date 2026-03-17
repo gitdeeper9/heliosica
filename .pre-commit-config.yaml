@@ -1,0 +1,169 @@
+# HELIOSICA Pre-commit Configuration
+# Heliospheric Event and L1 Integrated Observatory for Solar Intelligence and Coronal Activity
+# Version: 1.0.0 | DOI: 10.5281/zenodo.19082026
+
+repos:
+  # ============================================
+  # GENERAL HOOKS
+  # ============================================
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-json
+      - id: check-toml
+      - id: check-added-large-files
+        args: [--maxkb=10240]
+      - id: check-merge-conflict
+      - id: detect-private-key
+      - id: check-case-conflict
+
+  # ============================================
+  # PYTHON FORMATTING
+  # ============================================
+  - repo: https://github.com/psf/black
+    rev: 24.1.1
+    hooks:
+      - id: black
+        args: [--line-length=100]
+        language_version: python3
+
+  - repo: https://github.com/pycqa/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+        args: [--profile=black, --line-length=100]
+        name: isort (python)
+
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v3.15.0
+    hooks:
+      - id: pyupgrade
+        args: [--py39-plus]
+
+  # ============================================
+  # PYTHON LINTING
+  # ============================================
+  - repo: https://github.com/pycqa/flake8
+    rev: 7.0.0
+    hooks:
+      - id: flake8
+        args: [--max-line-length=100, --extend-ignore=E203,W503]
+        additional_dependencies:
+          - flake8-docstrings>=1.7.0
+          - flake8-bugbear>=24.1.17
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.8.0
+    hooks:
+      - id: mypy
+        args: [--ignore-missing-imports, --follow-imports=silent]
+        additional_dependencies:
+          - numpy>=1.24.0
+          - scipy>=1.10.0
+          - pandas>=2.0.0
+
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.7.7
+    hooks:
+      - id: bandit
+        args: [--skip=B101, --confidence-level=high]
+        files: ^heliosica/
+
+  # ============================================
+  # SCIENTIFIC CODE QUALITY
+  # ============================================
+  - repo: https://github.com/nbQA-dev/nbQA
+    rev: 1.7.1
+    hooks:
+      - id: nbqa-black
+        args: [--line-length=100]
+      - id: nbqa-isort
+        args: [--profile=black]
+      - id: nbqa-flake8
+        args: [--max-line-length=100]
+
+  - repo: https://github.com/kynan/nbstripout
+    rev: 0.6.1
+    hooks:
+      - id: nbstripout
+        args: [--drop-empty-cells, --extra-keys=metadata.kernelspec]
+
+  # ============================================
+  # DOCUMENTATION
+  # ============================================
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.39.0
+    hooks:
+      - id: markdownlint
+        args: [--fix, --ignore=CHANGELOG.md]
+
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.2.6
+    hooks:
+      - id: codespell
+        args: [--ignore-words=.codespell-ignore.txt]
+        exclude: ^(\.git|venv|data|notebooks)/|\.ipynb$
+
+  # ============================================
+  # LOCAL HOOKS
+  # ============================================
+  - repo: local
+    hooks:
+      - id: pytest
+        name: pytest
+        entry: pytest tests/ -v --numprocesses=auto
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [push]
+
+      - id: validate-dbm
+        name: Validate DBM Solver
+        entry: python scripts/validate_dbm.py
+        language: system
+        files: ^heliosica/physics/dbm\.py$
+        pass_filenames: false
+
+      - id: validate-gssi-weights
+        name: Validate GSSI Weights
+        entry: python scripts/validate_gssi_weights.py
+        language: system
+        files: ^heliosica/physics/gssi\.py$
+        pass_filenames: false
+
+# ============================================
+# CI SETTINGS
+# ============================================
+ci:
+  autofix_commit_msg: |
+    [pre-commit.ci] auto fixes from pre-commit hooks
+  autoupdate_commit_msg: |
+    [pre-commit.ci] pre-commit autoupdate
+  autoupdate_schedule: monthly
+  skip:
+    - pylint
+    - mypy
+    - pytest
+    - validate-dbm
+    - validate-gssi-weights
+
+# ============================================
+# EXCLUDE PATTERNS
+# ============================================
+exclude: |
+  (?x)^(
+    \.venv/|
+    venv/|
+    env/|
+    data/|
+    notebooks/\.ipynb_checkpoints/|
+    \.pytest_cache/|
+    \.mypy_cache/|
+    \.tox/|
+    build/|
+    dist/|
+    .*\.egg-info/
+  )$

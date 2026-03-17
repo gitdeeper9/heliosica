@@ -1,0 +1,53 @@
+# HELIOSICA Requirements
+# Heliospheric Event and L1 Integrated Observatory for Solar Intelligence and Coronal Activity
+# Version: 1.0.0 | DOI: 10.5281/zenodo.19082026
+
+# ============================================
+# Core Scientific Computing
+# ============================================
+numpy>=1.24.0,<1.25.0
+scipy>=1.10.0,<1.11.0
+pandas>=2.0.0,<2.1.0
+xarray>=2023.4.0,<2024.0.0
+numba>=0.57.0,<0.58.0
+
+# ============================================
+# Data I/O & Serialization
+# ============================================
+h5py>=3.8.0,<3.9.0
+netCDF4>=1.6.0,<1.7.0
+pyyaml>=6.0,<7.0
+python-dotenv>=1.0.0,<2.0.0
+joblib>=1.2.0,<1.3.0
+requests>=2.30.0,<2.31.0
+
+# ============================================
+# Visualization
+# ============================================
+matplotlib>=3.7.0,<3.8.0
+plotly>=5.14.0,<5.15.0
+seaborn>=0.12.0,<0.13.0
+
+# ============================================
+# Machine Learning & Statistics
+# ============================================
+scikit-learn>=1.2.0,<1.3.0
+statsmodels>=0.14.0,<0.15.0
+
+# ============================================
+# Space Physics Specific
+# ============================================
+# SunPy for solar data
+sunpy>=5.0.0,<6.0.0
+# drms for SOHO data access
+drms>=0.7.0,<0.8.0
+# astropy for coordinates
+astropy>=5.0.0,<6.0.0
+
+# ============================================
+# Utilities
+# ============================================
+click>=8.1.0,<8.2.0
+tqdm>=4.65.0,<4.66.0
+colorama>=0.4.6,<0.5.0
+python-dateutil>=2.8.0,<3.0.0

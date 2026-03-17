@@ -1,0 +1,30 @@
+cff-version: 1.2.0
+message: "If you use HELIOSICA in your research, please cite it as below."
+title: "HELIOSICA: Nine Parameters to Decode the Solar Wind and Shield Our Digital World"
+authors:
+  - family-names: "Baladi"
+    given-names: "Samir"
+    email: "gitdeeper@gmail.com"
+    orcid: "https://orcid.org/0009-0003-8903-0029"
+    affiliation: "Ronin Institute / Rite of Renaissance"
+version: 1.0.0
+doi: 10.5281/zenodo.19042948
+date-released: 2026-03-14
+url: "https://github.com/gitdeeper9/heliosica"
+repository-code: "https://github.com/gitdeeper9/heliosica"
+repository-artifact: "https://zenodo.org/records/19082026"
+license: MIT
+keywords:
+  - "space weather"
+  - "heliophysics"
+  - "coronal mass ejection"
+  - "solar wind"
+  - "geomagnetic storm"
+  - "kp index"
+  - "dst index"
+  - "drag-based model"
+  - "magnetopause"
+  - "magnetic reconnection"
+  - "forbush decrease"
+  - "real-time forecasting"
+abstract: "HELIOSICA (Heliospheric Event and L1 Integrated Observatory for Solar Intelligence and Coronal Activity) is a nine-parameter solar magnetohydrodynamics (MHD) framework for real-time prediction of geomagnetic storm intensity, magnetopause standoff distance, and Kp index evolution. Validated against 312 historical geomagnetic storms (1996-2025), the framework achieves 88.4% accuracy in storm classification and r² = 0.91 for Kp prediction."

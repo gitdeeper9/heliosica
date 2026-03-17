@@ -1,0 +1,64 @@
+# HELIOSICA MANIFEST.in
+# Heliospheric Event and L1 Integrated Observatory for Solar Intelligence and Coronal Activity
+# Version: 1.0.0 | DOI: 10.5281/zenodo.19082026
+
+include README.md
+include LICENSE
+include CHANGELOG.md
+include CONTRIBUTING.md
+include AUTHORS.md
+include CODE_OF_CONDUCT.md
+include CITATION.cff
+include .env.example
+include requirements.txt
+include requirements-dev.txt
+include pyproject.toml
+include setup.cfg
+include setup.py
+
+include Dockerfile
+include docker-compose.yml
+
+include .pre-commit-config.yaml
+include .readthedocs.yaml
+include .gitlab-ci.yml
+
+recursive-include heliosica *.py
+recursive-include config *.yaml
+recursive-include config *.json
+recursive-include data/sample *.csv
+recursive-include data/sample *.h5
+recursive-include data/sample *.nc
+recursive-include tests *.py
+recursive-include tests/data *.csv
+recursive-include docs *.md
+recursive-include docs *.rst
+recursive-include notebooks *.ipynb
+recursive-include notebooks/case_studies *.ipynb
+recursive-include notebooks/tutorials *.ipynb
+recursive-include dashboard *.js
+recursive-include dashboard *.css
+recursive-include dashboard *.html
+recursive-include web *.py
+recursive-include web/templates *.html
+recursive-include web/static *.css
+recursive-include web/static *.js
+
+# Exclude files
+global-exclude *.pyc
+global-exclude *.pyo
+global-exclude __pycache__
+global-exclude .DS_Store
+global-exclude .coverage
+global-exclude *.log
+global-exclude .cache
+global-exclude .pytest_cache
+global-exclude .mypy_cache
+global-exclude .venv
+global-exclude venv
+global-exclude build
+global-exclude dist
+global-exclude *.egg-info
+global-exclude .ipynb_checkpoints
+global-exclude .env
+global-exclude .env.*

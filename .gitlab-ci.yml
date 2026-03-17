@@ -1,0 +1,145 @@
+# HELIOSICA GitLab CI/CD Configuration
+# Heliospheric Event and L1 Integrated Observatory for Solar Intelligence and Coronal Activity
+# Version: 1.0.0 | DOI: 10.5281/zenodo.19082026
+
+stages:
+  - test
+  - build
+  - deploy
+  - docs
+
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+  DOCKER_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+
+cache:
+  paths:
+    - .cache/pip
+    - venv/
+
+# ============================================
+# TEST STAGE
+# ============================================
+.test_template: &test_definition
+  stage: test
+  image: python:3.10-slim
+  before_script:
+    - apt-get update && apt-get install -y libhdf5-dev libnetcdf-dev
+    - pip install --upgrade pip
+    - pip install pytest pytest-cov pytest-xdist
+    - pip install -r requirements.txt
+    - pip install -e .
+  script:
+    - pytest tests/ -v --cov=heliosica --cov-report=term --numprocesses=auto
+  artifacts:
+    reports:
+      junit: report.xml
+
+test-python39:
+  <<: *test_definition
+  image: python:3.9-slim
+
+test-python310:
+  <<: *test_definition
+  image: python:3.10-slim
+
+test-python311:
+  <<: *test_definition
+  image: python:3.11-slim
+
+lint:
+  stage: test
+  image: python:3.10-slim
+  before_script:
+    - pip install flake8 black isort mypy
+  script:
+    - flake8 heliosica/ tests/ --max-line-length=100
+    - black --check heliosica/ tests/ --line-length=100
+    - isort --check-only heliosica/ tests/ --profile=black
+    - mypy heliosica/ --ignore-missing-imports
+
+# ============================================
+# BUILD STAGE
+# ============================================
+build-package:
+  stage: build
+  image: python:3.10-slim
+  before_script:
+    - pip install build twine wheel
+  script:
+    - python -m build
+    - twine check dist/*
+  artifacts:
+    paths:
+      - dist/
+    expire_in: 1 week
+
+build-docker:
+  stage: build
+  image: docker:latest
+  services:
+    - docker:dind
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - docker build -t $DOCKER_IMAGE .
+    - docker push $DOCKER_IMAGE
+    - docker tag $DOCKER_IMAGE $CI_REGISTRY_IMAGE:latest
+    - docker push $CI_REGISTRY_IMAGE:latest
+  only:
+    - main
+    - tags
+
+# ============================================
+# DEPLOY STAGE
+# ============================================
+deploy-pypi:
+  stage: deploy
+  image: python:3.10-slim
+  before_script:
+    - pip install twine
+  script:
+    - TWINE_PASSWORD=${PYPI_TOKEN} twine upload --username __token__ --skip-existing dist/*
+  only:
+    - tags
+  when: manual
+
+deploy-netlify:
+  stage: deploy
+  image: node:18-alpine
+  before_script:
+    - npm install -g netlify-cli
+  script:
+    - cd dashboard
+    - npm install
+    - npm run build
+    - netlify deploy --prod --dir=build --site=$NETLIFY_SITE_ID --auth=$NETLIFY_AUTH_TOKEN
+  only:
+    - main
+  environment:
+    name: production
+    url: https://heliosica.netlify.app
+
+# ============================================
+# DOCS STAGE
+# ============================================
+build-docs:
+  stage: docs
+  image: python:3.10-slim
+  before_script:
+    - pip install mkdocs mkdocs-material mkdocstrings[python] pymdown-extensions
+  script:
+    - mkdocs build --strict
+  artifacts:
+    paths:
+      - site/
+
+pages:
+  stage: deploy
+  script:
+    - mv site/ public/
+  artifacts:
+    paths:
+      - public
+  only:
+    - main

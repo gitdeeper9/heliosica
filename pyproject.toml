@@ -1,0 +1,55 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel>=0.38"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "heliosica"
+version = "1.0.0"
+description = "HELIOSICA - Nine Parameters to Decode the Solar Wind and Shield Our Digital World"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+authors = [
+    {name = "Samir Baladi", email = "gitdeeper@gmail.com"}
+]
+keywords = [
+    "space-weather", "heliophysics", "cme", "solar-wind",
+    "geomagnetic-storm", "kp-index", "dst-index", "mhd",
+    "dbm-model", "forbush-decrease", "reconnection"
+]
+
+[project.urls]
+Homepage = "https://github.com/gitdeeper9/heliosica"
+Documentation = "https://heliosica.netlify.app/docs"
+Repository = "https://github.com/gitdeeper9/heliosica.git"
+DOI = "https://doi.org/10.5281/zenodo.19042948"
+
+[project.scripts]
+heliosica = "heliosica.cli.main:cli"
+heliosica-download = "heliosica.cli.download:main"
+heliosica-process = "heliosica.cli.process:main"
+heliosica-gssi = "heliosica.cli.gssi:main"
+heliosica-serve = "heliosica.cli.serve:main"
+heliosica-diagnostic = "heliosica.cli.diagnostic:main"
+heliosica-validate = "heliosica.cli.validate:main"
+heliosica-forecast = "heliosica.cli.forecast:main"
+heliosica-alert = "heliosica.cli.alert:main"
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-ra -q --cov=heliosica --cov-report=term"
+
+[tool.black]
+line-length = 100
+
+[tool.isort]
+profile = "black"
+line_length = 100
+
+[tool.mypy]
+python_version = "3.10"
+ignore_missing_imports = true

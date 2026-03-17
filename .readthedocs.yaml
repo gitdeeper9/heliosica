@@ -1,0 +1,67 @@
+# HELIOSICA ReadTheDocs Configuration
+# Heliospheric Event and L1 Integrated Observatory for Solar Intelligence and Coronal Activity
+# Version: 1.0.0 | DOI: 10.5281/zenodo.19082026
+
+version: 2
+
+# ============================================
+# BUILD CONFIGURATION
+# ============================================
+build:
+  os: ubuntu-22.04
+  tools:
+    python: "3.10"
+  jobs:
+    pre_build:
+      - pip install --upgrade pip
+      - pip install -r docs/requirements.txt
+      - python scripts/generate_api_docs.py
+
+# ============================================
+# SPHINX CONFIGURATION
+# ============================================
+sphinx:
+  configuration: docs/source/conf.py
+  builder: html
+  fail_on_warning: true
+
+# ============================================
+# PYTHON CONFIGURATION
+# ============================================
+python:
+  install:
+    - method: pip
+      path: .
+      extra_requirements:
+        - docs
+        - all
+    - requirements: docs/requirements.txt
+
+# ============================================
+# OUTPUT FORMATS
+# ============================================
+formats:
+  - pdf
+  - epub
+  - htmlzip
+
+# ============================================
+# VERSIONING
+# ============================================
+versioning:
+  formats: all
+  defaults:
+    fallback_to_latest: true
+
+# ============================================
+# REDIRECTS
+# ============================================
+redirects:
+  index: README.md
+  installation: INSTALL.md
+  quickstart: tutorials/quickstart.md
+  api-reference: api/index.md
+  theory: theory/index.md
+  examples: examples/index.md
+  contributing: CONTRIBUTING.md
+  changelog: CHANGELOG.md

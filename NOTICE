@@ -1,0 +1,93 @@
+HELIOSICA - Heliospheric Event and L1 Integrated Observatory for Solar Intelligence and Coronal Activity
+Copyright (c) 2026 Samir Baladi
+
+This product includes software developed by Samir Baladi
+Principal Investigator: Samir Baladi (gitdeeper@gmail.com)
+ORCID: 0009-0003-8903-0029
+Ronin Institute / Rite of Renaissance
+
+==========================================================================
+LICENSE INFORMATION
+==========================================================================
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+==========================================================================
+THIRD-PARTY NOTICES
+==========================================================================
+
+This project includes or depends on the following third-party software:
+
+1. NumPy (BSD License)
+   - Copyright (c) 2005-2023, NumPy Developers
+   - https://numpy.org/
+
+2. SciPy (BSD License)
+   - Copyright (c) 2001-2002 Enthought, Inc.
+   - https://scipy.org/
+
+3. Pandas (BSD License)
+   - Copyright (c) 2008-2011, AQR Capital Management, LLC
+   - https://pandas.pydata.org/
+
+4. Matplotlib (PSF License)
+   - Copyright (c) 2002-2012 John Hunter
+   - https://matplotlib.org/
+
+5. SunPy (BSD License)
+   - Copyright (c) 2011-2024, SunPy Community
+   - https://sunpy.org/
+
+6. Astropy (BSD License)
+   - Copyright (c) 2011-2024, Astropy Developers
+   - https://www.astropy.org/
+
+==========================================================================
+DATA SOURCES
+==========================================================================
+
+This project uses data from:
+
+1. SOHO/LASCO CME Catalogue (NASA/ESA)
+   - Provided by NASA and ESA
+   - Usage: CME parameters (V₀, ω)
+
+2. DSCOVR Magnetometer & Plasma (NOAA/SWPC)
+   - Provided by NOAA Space Weather Prediction Center
+   - Usage: Real-time solar wind conditions
+
+3. OMNI Heliospheric Dataset (NASA/GSFC)
+   - Provided by NASA Goddard Space Flight Center
+   - Usage: Historical validation data
+
+4. GFZ Potsdam Kp Index
+   - Provided by GFZ German Research Centre for Geosciences
+   - Usage: Geomagnetic activity validation
+
+5. NMDB Neutron Monitor Database
+   - Provided by NMDB (http://www.nmdb.eu/)
+   - Usage: Forbush decrease detection
+
+==========================================================================
+ACKNOWLEDGMENTS
+==========================================================================
+
+The HELIOSICA project acknowledges:
+
+- Eugene Parker (1927-2022), whose solar wind theory made this possible
+- The global space weather research community
+- NOAA Space Weather Prediction Center for operational data
+- NASA Goddard Space Flight Center for heliospheric datasets
+- All open-source contributors to scientific Python
+
+==========================================================================
+CONTACT
+==========================================================================
+
+For questions, collaborations, or permissions:
+Email: gitdeeper@gmail.com
+ORCID: 0009-0003-8903-0029
+Web: https://heliosica.netlify.app
+
+Version: 1.0.0
+Last Updated: 2026-03-14
